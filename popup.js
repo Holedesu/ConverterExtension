@@ -58,8 +58,8 @@ function generatePDF(items) {
 
             x += colSpacing; // Перемещение вправо
 
-            // Переход на новую колонку после 10 элементов
-            if ((i + 1) % colCount === 0) {
+            // Переход на новую колонку после 5 элементов
+            if ((i + 1) % rowCount === 0) {
                 x = 10;
                 y += rowSpacing;
             }
