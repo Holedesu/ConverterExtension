@@ -43,8 +43,8 @@ function generatePDF(items) {
     let itemHeight = 35;
     let colCount = 10; // 10 колонок
     let rowCount = 5;  // 5 строк
-    let colSpacing = 40;
-    let rowSpacing = 40;
+    let colSpacing = 35;
+    let rowSpacing = 36;
     let maxItems = Math.min(items.length, 50); // Ограничение на 50 элементов
 
     for (let i = 0; i < maxItems; i++) {

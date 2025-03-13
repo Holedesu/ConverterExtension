@@ -42,8 +42,8 @@ function extractData() {
         const companyInfoTag = div.querySelector("div.style-root-Dh2i5");
         if (companyInfoTag) {
             let text = companyInfoTag.innerText.replace(data.company, "").trim();
-            let rating = text.slice(0, 3).replace("\n\n", "");
-            let reviews = text.slice(3);
+            let rating = text.slice(0, 3);
+            let reviews = text.slice(3).replace("\n\n", "");
             data.rating = rating || "Нет рейтинга";
             data.reviews = reviews || "Нет отзывов";
         } else {
