@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// 🔹 Получаем данные из `content.js`
+// Получаем данные из `content.js`
 chrome.runtime.onMessage.addListener((message) => {
     if (message.action === "sendData") {
         console.log("Полученные данные:", message.items);
@@ -17,7 +17,7 @@ chrome.runtime.onMessage.addListener((message) => {
     }
 });
 
-// 🔹 Функция создания PDF
+// Функция создания PDF
 function generatePDF(items) {
     if (!window.jspdf) {
         console.error("Ошибка: jsPDF не загружен!");
@@ -27,7 +27,7 @@ function generatePDF(items) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // 🔹 Добавляем шрифт Arial
+    // Добавляем шрифт Arial
     doc.addFileToVFS("Arial.ttf", arial_base64);
     doc.addFileToVFS("Arial-Bold.ttf", arial_bold_base64);
     doc.addFont("Arial-Bold.ttf", "Arial", "bold");
@@ -35,7 +35,7 @@ function generatePDF(items) {
     doc.setFont("Arial", "bold");
     doc.setFontSize(14);
 
-    // 🔹 Заголовок перед изображениями
+    // Заголовок перед изображениями
     doc.text("Изображения по запросу:", 10, 10);
 
     let x = 10, y = 20;
@@ -51,20 +51,20 @@ function generatePDF(items) {
         let item = items[i];
 
         try {
-            // 🔹 Добавляем картинку
+            // Добавляем картинку
             if (item.image) {
                 doc.addImage(item.image, "JPEG", x, y, itemWidth, itemHeight);
             }
 
             x += colSpacing; // Перемещение вправо
 
-            // 🔹 Переход на новую колонку после 10 элементов
+            // Переход на новую колонку после 10 элементов
             if ((i + 1) % colCount === 0) {
                 x = 10;
                 y += rowSpacing;
             }
 
-            // 🔹 Если страница заполнена, создаём новую
+            // Если страница заполнена, создаём новую
             if (y > 250) {
                 doc.addPage();
                 doc.text("Изображения по запросу:", 10, 10);
@@ -76,15 +76,14 @@ function generatePDF(items) {
         }
     }
 
-    // 🔹 Добавляем текстовые данные по 4 объявления в колонке
-    // doc.addPage();
+    // Добавляем текстовые данные по 4 объявления в колонке
     y = 10;
     let colWidth = 180; // Ширина колонки
     let colX = 10;
     let itemsPerColumn = 4;
     let currentItemInColumn = 0;
 
-    // 🔹 Добавляем текстовые данные, по 4 объявления на страницу
+    // Добавляем текстовые данные, по 4 объявления на страницу
     for (let i = 0; i < maxItems; i += 4) {
         doc.addPage();
         y = 10;
