@@ -1,24 +1,27 @@
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("generatePdf").addEventListener("click", () => {
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            chrome.scripting.executeScript({
+document.addEventListener("DOMContentLoaded", async function () {
+    document.getElementById("generatePdf").addEventListener("click", async () => {
+        try {
+            const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+            await chrome.scripting.executeScript({
                 target: { tabId: tabs[0].id },
                 files: ["content.js"]
             });
-        });
+        } catch (error) {
+            console.error("Ошибка при выполнении скрипта:", error);
+        }
     });
 });
 
 // Получаем данные из `content.js`
-chrome.runtime.onMessage.addListener((message) => {
+chrome.runtime.onMessage.addListener(async (message) => {
     if (message.action === "sendData") {
         console.log("Полученные данные:", message.items);
-        generatePDF(message.items);
+        await generatePDF(message.items);
     }
 });
 
 // Функция создания PDF
-function generatePDF(items) {
+async function generatePDF(items) {
     if (!window.jspdf) {
         console.error("Ошибка: jsPDF не загружен!");
         return;
@@ -96,7 +99,7 @@ function generatePDF(items) {
                 doc.text(`Рейтинг: ${item.rating}`, 10, y + 20);
                 doc.text(`Отзывы: ${item.reviews}`, 10, y + 25);
                 
-                // 🔹 Добавляем текст объявления в двух видах
+                // Добавляем текст объявления в двух видах
                 if (item.text) {
                     let shortText = doc.splitTextToSize(`Краткое описание: ${item.text.slice(0, 100)}`, 180);
                     let fullText = doc.splitTextToSize(`Полное описание: ${item.text.slice(0, 200)}`, 180);
