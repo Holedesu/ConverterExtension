@@ -38,13 +38,12 @@ function generatePDF(items) {
     // Заголовок перед изображениями
     doc.text("Изображения по запросу:", 10, 10);
 
-    let x = 10, y = 20;
-    let itemWidth = 35;
-    let itemHeight = 35;
-    let colCount = 10; // 10 колонок
+    let x = 40, y = 20;
+    let itemWidth = 25;
+    let itemHeight = 25;
     let rowCount = 5;  // 5 строк
-    let colSpacing = 35;
-    let rowSpacing = 36;
+    let colSpacing = 25;
+    let rowSpacing = 26;
     let maxItems = Math.min(items.length, 50); // Ограничение на 50 элементов
 
     for (let i = 0; i < maxItems; i++) {
@@ -60,17 +59,17 @@ function generatePDF(items) {
 
             // Переход на новую колонку после 5 элементов
             if ((i + 1) % rowCount === 0) {
-                x = 10;
+                x = 40;
                 y += rowSpacing;
             }
 
-            // Если страница заполнена, создаём новую
-            if (y > 250) {
-                doc.addPage();
-                doc.text("Изображения по запросу:", 10, 10);
-                x = 10;
-                y = 20;
-            }
+            // // Если страница заполнена, создаём новую
+            // if (y > 250) {
+            //     doc.addPage();
+            //     doc.text("Изображения по запросу:", 10, 10);
+            //     x = 40;
+            //     y = 20;
+            // }
         } catch (error) {
             console.error("Ошибка добавления данных в PDF:", error);
         }
