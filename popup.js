@@ -78,10 +78,6 @@ function generatePDF(items) {
 
     // Добавляем текстовые данные по 4 объявления в колонке
     y = 10;
-    let colWidth = 180; // Ширина колонки
-    let colX = 10;
-    let itemsPerColumn = 4;
-    let currentItemInColumn = 0;
 
     // Добавляем текстовые данные, по 4 объявления на страницу
     for (let i = 0; i < maxItems; i += 4) {
