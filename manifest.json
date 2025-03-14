@@ -19,7 +19,7 @@
     "content_scripts": [
       {
         "matches": ["*://*/*"],
-        "js": ["content.js", "libs/jspdf.umd.min.js"]
+        "js": ["libs/jspdf.umd.min.js"]
       }
     ],
     "web_accessible_resources": [{

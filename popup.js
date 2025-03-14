@@ -1,18 +1,19 @@
 document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("generatePdf").addEventListener("click", async () => {
-        try {
-            const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-            await chrome.scripting.executeScript({
-                target: { tabId: tabs[0].id },
-                files: ["content.js"]
-            });
-        } catch (error) {
-            console.error("Ошибка при выполнении скрипта:", error);
-        }
+      try {
+        const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+        await chrome.scripting.executeScript({
+          target: { tabId: tabs[0].id },
+          files: ["content.js"]
+        });
+        chrome.tabs.sendMessage(tabs[0].id, { action: "startScroll" });
+      } catch (error) {
+        console.error("Ошибка при выполнении скрипта:", error);
+      }
     });
-});
+  });
 
-// Получаем данные из `content.js`
+// Получаем данные из content.js
 chrome.runtime.onMessage.addListener(async (message) => {
     if (message.action === "sendData") {
         console.log("Полученные данные:", message.items);
@@ -30,7 +31,7 @@ async function generatePDF(items) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // Добавляем шрифт Arial
+    // Добавляем шрифты Arial
     doc.addFileToVFS("Arial.ttf", arial_base64);
     doc.addFileToVFS("Arial-Bold.ttf", arial_bold_base64);
     doc.addFont("Arial-Bold.ttf", "Arial", "bold");
@@ -38,50 +39,40 @@ async function generatePDF(items) {
     doc.setFont("Arial", "bold");
     doc.setFontSize(14);
 
-    // Заголовок перед изображениями
+    // Заголовок для изображений
     doc.text("Изображения по запросу:", 10, 10);
 
     let x = 40, y = 20;
-    let itemWidth = 25;
-    let itemHeight = 25;
-    let rowCount = 5;  // 5 строк
-    let colSpacing = 25;
-    let rowSpacing = 26;
-    let maxItems = Math.min(items.length, 50); // Ограничение на 50 элементов
+    const itemWidth = 25;
+    const itemHeight = 25;
+    const rowCount = 5;  // 5 элементов в строке
+    const colSpacing = 25;
+    const rowSpacing = 26;
+    const maxItems = Math.min(items.length, 50); // Ограничение на 50 элементов
 
     for (let i = 0; i < maxItems; i++) {
         let item = items[i];
 
         try {
-            // Добавляем картинку
+            // Добавляем изображение, если оно есть
             if (item.image) {
                 doc.addImage(item.image, "JPEG", x, y, itemWidth, itemHeight);
             }
 
-            x += colSpacing; // Перемещение вправо
+            x += colSpacing;
 
-            // Переход на новую колонку после 5 элементов
+            // Переход на новую строку после rowCount элементов
             if ((i + 1) % rowCount === 0) {
                 x = 40;
                 y += rowSpacing;
             }
-
-            // // Если страница заполнена, создаём новую
-            // if (y > 250) {
-            //     doc.addPage();
-            //     doc.text("Изображения по запросу:", 10, 10);
-            //     x = 40;
-            //     y = 20;
-            // }
         } catch (error) {
-            console.error("Ошибка добавления данных в PDF:", error);
+            console.error("Ошибка добавления изображения в PDF:", error);
         }
     }
 
-    // Добавляем текстовые данные по 4 объявления в колонке
+    // Добавляем текстовые данные — по 4 объявления на страницу
     y = 10;
-
-    // Добавляем текстовые данные, по 4 объявления на страницу
     for (let i = 0; i < maxItems; i += 4) {
         doc.addPage();
         y = 10;
@@ -99,7 +90,6 @@ async function generatePDF(items) {
                 doc.text(`Рейтинг: ${item.rating}`, 10, y + 20);
                 doc.text(`Отзывы: ${item.reviews}`, 10, y + 25);
                 
-                // Добавляем текст объявления в двух видах
                 if (item.text) {
                     let shortText = doc.splitTextToSize(`Краткое описание: ${item.text.slice(0, 100)}`, 180);
                     let fullText = doc.splitTextToSize(`Полное описание: ${item.text.slice(0, 200)}`, 180);
@@ -114,5 +104,5 @@ async function generatePDF(items) {
         }
     }
 
-    doc.save("listings.pdf");
+    doc.save("result.pdf");
 }
